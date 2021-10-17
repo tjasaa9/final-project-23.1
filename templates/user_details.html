@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title%}User details{% endblock title%}
+
+{% block content %}
+<h1>{{ user.email }}</h1>
+
+<p>Email: {{ user.email }}</p>
+
+<a href="/send_message">Send them a message</a>
+{% endblock content%}
