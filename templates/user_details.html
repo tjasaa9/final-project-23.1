@@ -2,9 +2,16 @@
 {% block title%}User details{% endblock title%}
 
 {% block content %}
-<h1>{{ user.email }}</h1>
+<h1>Pošiljatelj: {{ sender.email }}</h1>  <!--User.email spremeni v svoj email (pošiljateljev)-->
 
-<p>Email: {{ user.email }}</p>
+<p>Prejemnik: {{ receiver.email }}</p>
 
-<a href="/send_message">Send them a message</a>
+<!-- Form belongs to send_mesage.html-->
+<form action="/successsfully_sent" method="POST">
+    <textarea name="text" placeholder="Enter your message" cols="30" rows="10"></textarea>
+    <br>
+    <input name = "send_to" type="hidden" value="{{ receiver.email }}">
+    <button type="submit">Send</button>
+</form>
+
 {% endblock content%}

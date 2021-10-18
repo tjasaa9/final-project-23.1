@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, url_for, redirect, make_response, Response
-from models import User, db
+from models import User, Messages,  db
 import hashlib
 import uuid
 
@@ -15,7 +15,6 @@ def index():
     else:
         user = None
     return render_template("index.html", user=user)
-
 
 
 
@@ -75,25 +74,40 @@ def all_users():
 
 @app.route("/user/<user_id>", methods=["GET"])
 def user_details(user_id):
-    user = db.query(User).get(int(user_id))
+    receiver = db.query(User).get(int(user_id))
 
-    return render_template("user_details.html", user=user)
+    session_token = request.cookies.get("session_token")
 
+    sender = db.query(User).filter_by(session_token=session_token).first()
 
-@app.route("/send_message", methods=["GET"])
-def send_message():
-
-
-    return render_template("send_message.html")
+    return render_template("user_details.html", receiver=receiver, sender=sender)
 
 
-@app.route("/successfully_sent", methods=["POST"])
+
+@app.route("/successsfully_sent", methods=["POST"])
 def successfully_sent():
+    session_token = request.cookies.get("session_token")
 
-    
+    user = db.query(User).filter_by(session_token=session_token).first()
 
-    return "Successfully sent!"
+
+    if user:
+        receiver = request.form.get("send_to")
+        text = request.form.get("text")
+        sender = user.email
+
+        messages = Messages(sender=sender, receiver=receiver, text=text)
+        messages.save()
+
+        besedilo = "Text: " + text + "<br>" + "Pošiljatelj: " + sender + "<br>" + "Prejemnik: " + receiver
+
+
+        return besedilo
+
+    else:
+        return "NDEJLM!!"
+
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run()
 
