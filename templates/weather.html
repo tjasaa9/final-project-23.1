@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Current Weather{% endblock title%}
+
+{% block content %}
+<h1>Current Weather: </h1>
+
+<p>Location: {{ data.name }}</p>
+<p>Weather description: {{ data.weather[0].description }}</p>
+<p>Current temperature: {{ data.main.temp }}</p>
+{%  endblock content %}

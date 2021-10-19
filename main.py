@@ -1,7 +1,9 @@
 from flask import Flask, request, render_template, url_for, redirect, make_response, Response
+import requests
 from models import User, Messages,  db
 import hashlib
 import uuid
+import os
 
 app = Flask(__name__)
 
@@ -46,7 +48,7 @@ def login():
     
     
     #save user's session into a cookie
-    response = make_response(redirect(url_for("index")))
+    response = make_response(redirect(url_for("profile")))
     response.set_cookie("session_token", session_token, httponly=True, samesite="Strict")
     
     return response
@@ -84,7 +86,7 @@ def user_details(user_id):
 
 
 
-@app.route("/successsfully_sent", methods=["POST"])
+@app.route("/successfully_sent", methods=["POST"])
 def successfully_sent():
     session_token = request.cookies.get("session_token")
 
@@ -99,13 +101,60 @@ def successfully_sent():
         messages = Messages(sender=sender, receiver=receiver, text=text)
         messages.save()
 
-        besedilo = "Text: " + text + "<br>" + "Pošiljatelj: " + sender + "<br>" + "Prejemnik: " + receiver
 
-
-        return besedilo
+        return redirect(url_for("successfully_sent_message"))
 
     else:
-        return "NDEJLM!!"
+        return "Try again."
+
+
+@app.route("/successfully_sent_message", methods=["GET"])
+def successfully_sent_message():
+    
+    return render_template("success_message.html")
+
+@app.route("/sent_messages")
+def sent_messages():
+ 
+    return render_template("sent_messages.html")
+
+@app.route("/sent_messages/<messages_id>")
+def sent_messages_to_user(messages_id):
+    receiver = request.form.get("sent_to")
+    session_token = request.cookies.get("session_token")
+
+    sender = db.query(User).filter_by(session_token=session_token).first()
+
+    besedilo = "Prejemnik: " + receiver + "<br>" + "Pošiljatelj: " + sender
+
+    return besedilo
+
+
+
+try:
+    import secrets
+except ImportError as e:
+    pass
+
+@app.route("/weather", methods=["GET"])
+def weather():
+    query = "Ljubljana,SLO"
+    unit="metric"
+    api_key = os.environ.get("API_KEY")
+
+    url = "https://api.openweathermap.org/data/2.5/weather?q={0}&units={1}&appid={2}".format(query, unit, api_key)
+    data = requests.get(url=url)
+
+    return render_template("weather.html", data=data.json())
+
+
+
+@app.route("/index", methods=["GET"])
+def clear():
+    resp = make_response(render_template("index.html"))
+    resp.set_cookie("session_token", expires=0)
+
+    return resp
 
 
 if __name__=="__main__":

@@ -7,11 +7,11 @@
 <p>Prejemnik: {{ receiver.email }}</p>
 
 <!-- Form belongs to send_mesage.html-->
-<form action="/successsfully_sent" method="POST">
-    <textarea name="text" placeholder="Enter your message" cols="30" rows="10"></textarea>
+<form action="/successfully_sent" method="POST">
+    <textarea class="form-control" id="exampleFormControlTextarea1" name="text" placeholder="Enter your message" cols="30" rows="10"></textarea>
     <br>
     <input name = "send_to" type="hidden" value="{{ receiver.email }}">
-    <button type="submit">Send</button>
+    <button  type="submit">Send</button>
 </form>
 
 {% endblock content%}

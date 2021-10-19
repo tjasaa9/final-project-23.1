@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title%}Message sent!{% endblock title%}
+
+{% block content %}
+<h1>Message was successfully sent!</h1>
+<p>Sender: {{ sender }}</p><br>
+<p>Receiver: {{ receiver }}</p><br>
+<p>Text: {{ text }}</p>
+{% endblock content %}
