@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title%}Receiver messages{% endblock title%}
+
+{% block content %}
+<h1>Messages you received: </h1>
+<br>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sender</th>
+            <th>Text</th>
+        </tr>
+    </thead>
+{% for message in messages %}
+<tbody>
+    <tr>
+        <td>{{ message.sender }}</td>
+        <td>{{ message.text }}</td>
+    </tr>
+</tbody>
+{% endfor %}
+</table>
+
+
+{% endblock content %}

@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1>Message was successfully sent!</h1>
-<p>Sender: {{ sender }}</p><br>
-<p>Receiver: {{ receiver }}</p><br>
-<p>Text: {{ text }}</p>
+<p>Sender: {{ messages.sender }}</p><br>
+<p>Receiver: {{ messages.receiver }}</p><br>
+<p>Text: {{ messages.text }}</p>
 {% endblock content %}

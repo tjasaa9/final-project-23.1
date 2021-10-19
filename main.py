@@ -4,6 +4,7 @@ from models import User, Messages,  db
 import hashlib
 import uuid
 import os
+from sqlalchemy import desc
 
 app = Flask(__name__)
 
@@ -97,6 +98,7 @@ def successfully_sent():
         receiver = request.form.get("send_to")
         text = request.form.get("text")
         sender = user.email
+        
 
         messages = Messages(sender=sender, receiver=receiver, text=text)
         messages.save()
@@ -104,30 +106,53 @@ def successfully_sent():
 
         return redirect(url_for("successfully_sent_message"))
 
+
     else:
         return "Try again."
 
 
 @app.route("/successfully_sent_message", methods=["GET"])
 def successfully_sent_message():
+    session_token = request.cookies.get("session_token")
+
+    user = db.query(User).filter_by(session_token=session_token).first()
+    sender = user.email
+
+    messages = db.query(Messages).filter_by(sender=sender).first()
+    #dokwončej mona
     
-    return render_template("success_message.html")
+    
+    return render_template("success_message.html", messages=messages)
+
+
+
 
 @app.route("/sent_messages")
 def sent_messages():
- 
-    return render_template("sent_messages.html")
-
-@app.route("/sent_messages/<messages_id>")
-def sent_messages_to_user(messages_id):
-    receiver = request.form.get("sent_to")
     session_token = request.cookies.get("session_token")
+    user = db.query(User).filter_by(session_token=session_token).first()
+    sender = user.email
 
-    sender = db.query(User).filter_by(session_token=session_token).first()
+    messages = db.query(Messages).filter_by(sender=sender)
 
-    besedilo = "Prejemnik: " + receiver + "<br>" + "Pošiljatelj: " + sender
+ 
+    return render_template("sent_messages.html", messages=messages)
 
-    return besedilo
+
+@app.route("/received_messages")
+def received_messages():
+    session_token = request.cookies.get("session_token")
+    user = db.query(User).filter_by(session_token=session_token).first()
+    receiver = user.email
+
+    messages = db.query(Messages).filter_by(receiver=receiver)
+
+ 
+    return render_template("received_messages.html", messages=messages)
+
+
+
+
 
 
 

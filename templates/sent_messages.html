@@ -5,9 +5,23 @@
 {% block content %}
 <h1>Messages you sent: </h1>
 <br>
-<form action="/sent_messages" method="get">
-    <input type="sent_to" type="hidden" value=" {{ receiver }}">
-</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Receiver</th>
+            <th>Text</th>
+        </tr>
+    </thead>
+{% for message in messages %}
+<tbody>
+    <tr>
+        <td>{{ message.receiver }}</td>
+        <td>{{ message.text }}</td>
+    </tr>
+</tbody>
+{% endfor %}
+</table>
 
 
 {% endblock content %}
