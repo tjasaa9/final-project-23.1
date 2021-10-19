@@ -6,22 +6,11 @@
 <h1>Messages you sent: </h1>
 <br>
 
-<table>
-    <thead>
-        <tr>
-            <th>Receiver</th>
-            <th>Text</th>
-        </tr>
-    </thead>
-{% for message in messages %}
-<tbody>
-    <tr>
-        <td>{{ message.receiver }}</td>
-        <td>{{ message.text }}</td>
-    </tr>
-</tbody>
-{% endfor %}
-</table>
+<ul>
+    {% for user in users %}
+    <li><a href="/sent_messages/{{ user.email }}">{{ user.email }}</a></li>
+    {% endfor %}
+</ul>
 
 
 {% endblock content %}

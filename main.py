@@ -9,6 +9,7 @@ from sqlalchemy import desc
 app = Flask(__name__)
 
 
+
 @app.route("/", methods=["GET"])
 def index():
     session_token = request.cookies.get("session_token")
@@ -57,6 +58,7 @@ def login():
 
 @app.route("/profile", methods =["GET"])
 def profile():
+
     session_token = request.cookies.get("session_token")
 
     #search for user in the database
@@ -70,10 +72,10 @@ def profile():
 
 @app.route("/users", methods=["GET"])
 def all_users():
-    users = db.query(User).all()
+    
+        users = db.query(User).all()
 
-    return render_template("users.html", users=users)
-
+        return render_template("users.html", users=users)
 
 @app.route("/user/<user_id>", methods=["GET"])
 def user_details(user_id):
@@ -131,26 +133,48 @@ def successfully_sent_message():
 
 @app.route("/sent_messages")
 def sent_messages():
+    
+
+    users = db.query(User).all()
+
+ 
+    return render_template("sent_messages.html", users=users)
+
+
+@app.route("/sent_messages/<email>")
+def sent_messages_by_receiver(email):
     session_token = request.cookies.get("session_token")
     user = db.query(User).filter_by(session_token=session_token).first()
     sender = user.email
 
-    messages = db.query(Messages).filter_by(sender=sender)
+    messages = db.query(Messages).filter_by(sender=sender, receiver=email)
 
  
-    return render_template("sent_messages.html", messages=messages)
+    return render_template("sent_messages_by_receiver.html", messages=messages)
+
 
 
 @app.route("/received_messages")
 def received_messages():
+    
+    users = db.query(User).all()
+
+ 
+    return render_template("received_messages.html", users=users)
+
+@app.route("/received_messages/<email>")
+def received_messages_by_sender(email):
     session_token = request.cookies.get("session_token")
     user = db.query(User).filter_by(session_token=session_token).first()
     receiver = user.email
 
-    messages = db.query(Messages).filter_by(receiver=receiver)
+    messages = db.query(Messages).filter_by(receiver=receiver, sender=email)
 
  
-    return render_template("received_messages.html", messages=messages)
+    return render_template("received_messages_by_sender.html", messages=messages)
+
+
+
 
 
 try:
