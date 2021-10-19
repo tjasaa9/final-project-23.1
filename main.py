@@ -118,8 +118,10 @@ def successfully_sent_message():
     user = db.query(User).filter_by(session_token=session_token).first()
     sender = user.email
 
-    messages = db.query(Messages).filter_by(sender=sender).first()
-    #dokwončej mona
+    messages2 = db.query(Messages).filter_by(sender=sender)
+    messages = messages2.order_by(Messages.id.desc()).first()
+    #ta database je butast -_-
+    
     
     
     return render_template("success_message.html", messages=messages)
@@ -149,11 +151,6 @@ def received_messages():
 
  
     return render_template("received_messages.html", messages=messages)
-
-
-
-
-
 
 
 try:
